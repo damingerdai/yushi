@@ -1,8 +1,8 @@
 import { parseArgs } from "node:util";
 import { resolve } from "node:path";
 
-import { mastra } from "./mastra";
-import { readGitDiff } from "./mastra/tools/git-diff";
+import { mastra } from "@yushi/core";
+import { readGitDiff } from "@yushi/core/git-diff";
 
 const { values } = parseArgs({
   args: Bun.argv.slice(2),

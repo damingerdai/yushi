@@ -1,21 +1,20 @@
 {
   "name": "yushi",
-  "module": "index.ts",
-  "type": "module",
   "private": true,
+  "type": "module",
+  "packageManager": "bun@1.4.2",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "bun run src/cli.ts",
-    "typecheck": "tsc --noEmit"
-  },
-  "peerDependencies": {
-    "typescript": "^7"
-  },
-  "dependencies": {
-    "@ai-sdk/openai": "^4.0.78",
-    "@mastra/core": "^1.71.0",
-    "zod": "^4.6.5"
+    "dev": "turbo run dev --filter=@yushi/cli --",
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
+    "turbo": "^2",
+    "typescript": "^7",
     "@types/bun": "latest"
   }
 }
