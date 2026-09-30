@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "dev": "turbo run dev --filter=@yushi/cli --",
+    "dev:portal": "turbo run dev --filter=@yushi/portal --",
     "build": "turbo run build",
     "typecheck": "turbo run typecheck"
   },

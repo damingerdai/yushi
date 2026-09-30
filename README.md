@@ -1,63 +1,84 @@
 # yushi
 
-使用 Bun workspaces 和 Turborepo 管理的 Git 提交信息助手。
+A Git commit message assistant managed with Bun workspaces and Turborepo.
 
-## 项目结构
+## Project structure
 
 ```text
 apps/
-  cli/           # @yushi/cli：命令行入口
+  cli/           # @yushi/cli: command-line entry point
+  portal/        # @yushi/portal: Next.js web app with Tailwind CSS and shadcn/ui
 packages/
-  core/          # @yushi/core：Mastra agent、DeepSeek 配置和 Git 工具
-tsconfig.json    # 共享 TypeScript 配置
-turbo.json       # 任务依赖与缓存配置
+  core/          # @yushi/core: Mastra agent, DeepSeek configuration, and Git tools
+tsconfig.json    # Shared TypeScript configuration
+turbo.json       # Task dependencies and cache configuration
 ```
 
-CLI 通过 `workspace:*` 依赖 core，core 直接导出 TypeScript 源码，
-由 Bun 执行，无需单独构建。运行时依赖由各自的 workspace 声明。
+The CLI depends on core through `workspace:*`. Core exports TypeScript source
+that Bun runs directly, with no separate build step. Each workspace declares its own runtime dependencies.
 
-## 安装与配置
+## Installation and configuration
 
-使用 Bun 1.4.2，在仓库根目录执行：
+Using Bun 1.4.2, run these commands from the repository root:
 
 ```bash
 bun install
 cp .env.example .env
 ```
 
-在根目录 `.env` 中设置 `DEEPSEEK_API_KEY`，也可以通过环境变量提供。
-Bun 自动加载 `.env`；Turbo 的 dev 任务允许传递该环境变量。
+Set `DEEPSEEK_API_KEY` in the root `.env` file or as an environment variable.
+Bun loads `.env` automatically; Turbo's dev task allows this variable to pass through.
 
-## 运行
+## Usage
 
 ```bash
-# 分析当前仓库暂存区
+# Analyze staged changes in the current repository
 bun run dev
 
-# 分析指定仓库的未暂存变更
+# Analyze unstaged changes in a specific repository
 bun run dev -- --repo /absolute/path/to/repo --unstaged
 ```
 
-dev 是一次性命令，每次都会执行，不缓存模型响应。
-workspace 的 dev 脚本从仓库根目录启动 Bun，确保根目录 `.env`、
-默认仓库和相对 `--repo` 路径保持一致。
+The dev command runs once per invocation and does not cache model responses.
+The workspace dev script starts Bun from the repository root so that the root
+`.env`, default repository, and relative `--repo` paths resolve consistently.
 
-## 检查与构建
+## Portal
+
+```bash
+# Start the web development server at http://localhost:3000
+bun run dev:portal
+
+# Build and start Portal separately
+bun run --cwd apps/portal build
+bun run --cwd apps/portal start
+
+# Add a shadcn/ui component
+cd apps/portal
+bunx shadcn@latest add input
+```
+
+Portal uses the Next.js App Router, with pages in `apps/portal/src/app`
+and UI components in `apps/portal/src/components/ui`. It currently provides a basic home page;
+commit message generation is not yet connected.
+
+## Checks and builds
 
 ```bash
 bun run typecheck
 bun run build
 
-# 在仓库根目录运行构建产物
+# Run the build output from the repository root
 bun apps/cli/dist/index.js --repo /absolute/path/to/repo
 ```
 
-Turbo 按依赖顺序执行类型检查，并缓存检查结果和 `dist/**` 构建产物。
-CLI 构建使用 Bun，依赖保留为外部导入；产物需要当前 workspace 及已安装的依赖，
-不是独立可分发的二进制文件。
+Turbo runs type checks in dependency order and caches their results, the CLI's `dist/**` output,
+and Portal's `.next/**` output. The CLI builds with Bun and keeps dependencies as external imports.
+The output requires the current workspace and installed dependencies; it is not a standalone binary.
 
-## 添加 workspace
+## Adding a workspace
 
-在 `apps/*` 或 `packages/*` 创建目录和 `package.json`，内部依赖使用
-`workspace:*`，然后运行 `bun install`。TypeScript 配置继承根目录
-`tsconfig.json`；在包中定义 `build` 或 `typecheck` 脚本即可加入 Turbo 任务。
+Create a directory and `package.json` under `apps/*` or `packages/*`, use
+`workspace:*` for internal dependencies, and run `bun install`. Extend the root
+`tsconfig.json` for TypeScript configuration. Define `build` or `typecheck` scripts
+in the package to include it in Turbo tasks.
