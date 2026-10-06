@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+  <title>Yushi — the review seal</title>
+  <desc>A vermilion seal enclosing code brackets and a brush-shaped review mark.</desc>
+  <path d="M17 4H111L124 17V111L111 124H17L4 111V17Z" fill="#242722"/>
+  <path d="M23 15H105L113 23V105L105 113H23L15 105V23Z" fill="none" stroke="#FFFFFF" stroke-width="3"/>
+  <path d="M43 35H34L23 64L34 93H43L32 64Z" fill="#FFFFFF"/>
+  <path d="M85 35H94L105 64L94 93H85L96 64Z" fill="#FFFFFF"/>
+  <path d="M43 64L57 73L85 43L62 86H56Z" fill="#FFFFFF"/>
+  <path d="M56 29H72V33H56Z" fill="#FFFFFF"/>
+  <path d="M56 96H72V100H56Z" fill="#FFFFFF"/>
+</svg>

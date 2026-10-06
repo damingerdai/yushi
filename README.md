@@ -2,7 +2,11 @@
 
 A Git commit message assistant managed with Bun workspaces and Turborepo.
 
-The interface, diagnostics, and generated commit messages use English.
+Portal supports English and Simplified Chinese through the header language selector,
+with English as the default. The selection persists in a one-year `yushi-locale`
+cookie and applies across both pages and reloads. Application errors are translated
+when displayed; the API and shared GitHub library retain English diagnostics.
+Generated commit messages continue to use English.
 Uploaded diffs, original commit messages, PR titles, and filenames retain their
 original content and language.
 
@@ -15,6 +19,7 @@ apps/
 packages/
   core/          # @yushi/core: Mastra agent, DeepSeek configuration, and Git tools
   github/        # @yushi/github: reusable public GitHub PR client
+  ui/            # @yushi/ui: shared shadcn/ui components based on Base UI
 tsconfig.json    # Shared TypeScript configuration
 turbo.json       # Task dependencies and cache configuration
 ```
@@ -59,12 +64,16 @@ bun run --cwd apps/portal build
 bun run --cwd apps/portal start
 
 # Add a shadcn/ui component
-cd apps/portal
-bunx shadcn@latest add input
+cd packages/ui
+bunx --no-install shadcn add tooltip
 ```
 
 Portal uses the Next.js App Router, with pages in `apps/portal/src/app`
-and UI components in `apps/portal/src/components/ui`. Upload or drop a `.diff` or
+and shared UI components in `packages/ui/src/components`. Portal consumes the
+`@yushi/ui` workspace for buttons, inputs, cards, menus, alerts, and collapsible
+diff sections. Theme tokens and Tailwind utilities live in `packages/ui/src/styles/globals.css`;
+the app keeps only its diff-specific styles. See [the UI package guide](packages/ui/README.md).
+Upload or drop a `.diff` or
 `.patch` file (up to 100 KB) to review GitHub-style unified changes, line numbers,
 and original format-patch commit messages. Click the generation button to produce
 and copy a new Angular-style commit message using the existing core commit agent.

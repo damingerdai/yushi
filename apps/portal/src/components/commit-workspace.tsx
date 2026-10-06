@@ -1,17 +1,37 @@
 "use client";
 
 import type { PullRequestInfo } from "@yushi/github";
+import { Alert, AlertDescription } from "@yushi/ui/components/alert";
+import { Badge } from "@yushi/ui/components/badge";
+import { Button } from "@yushi/ui/components/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+} from "@yushi/ui/components/card";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@yushi/ui/components/collapsible";
+import { Input } from "@yushi/ui/components/input";
+import { Label } from "@yushi/ui/components/label";
+import { Separator } from "@yushi/ui/components/separator";
+import { Spinner } from "@yushi/ui/components/spinner";
 import {
   Check,
+  ChevronDown,
   Copy,
   FileDiff,
-  GitBranch,
-  LoaderCircle,
   Sparkles,
   Upload,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { LanguageSwitcher } from "@/components/language-switcher";
+import { useLocale } from "@/components/locale-provider";
 import { readApiResponse } from "@/lib/api-response";
 import { MAX_DIFF_BYTES, type ParsedDiff, parseDiff } from "@/lib/diff";
 
@@ -27,6 +47,7 @@ export default function CommitWorkspace({
 }: {
   mode: "upload" | "pull-request";
 }) {
+  const { t } = useLocale();
   const isPullRequest = mode === "pull-request";
   const [prUrl, setPrUrl] = useState("");
   const [upload, setUpload] = useState<UploadState>();
@@ -169,49 +190,74 @@ export default function CommitWorkspace({
   return (
     <main className="mx-auto min-h-screen max-w-7xl px-4 py-6 sm:px-8">
       <header className="flex items-center justify-between border-b pb-5">
-        <a href="/" className="flex items-center gap-2 text-lg font-semibold">
-          <GitBranch className="size-5" /> Yushi{" "}
+        <Link
+          href="/"
+          aria-label={t("Yushi home")}
+          className="flex items-center gap-3"
+        >
+          <Image
+            src="/brand/yushi-mark.svg"
+            alt=""
+            width={36}
+            height={36}
+            unoptimized
+          />
+          <span className="font-[Georgia,'Times_New_Roman',serif] text-3xl tracking-tight">
+            Yushi
+          </span>
           <span className="text-sm font-normal text-muted-foreground">
             / Portal
           </span>
-        </a>
-        <span className="rounded-full border px-3 py-1 text-xs text-muted-foreground">
-          Diff → Commit
-        </span>
+        </Link>
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className="hidden sm:inline-flex">
+            Diff → Commit
+          </Badge>
+          <LanguageSwitcher />
+        </div>
       </header>
-      <nav aria-label="Change source" className="mt-6 flex gap-2 text-sm">
-        <Link
-          href="/"
+      <nav aria-label={t("Change source")} className="mt-6 flex gap-2 text-sm">
+        <Button
+          render={<Link href="/" />}
+          nativeButton={false}
+          variant={!isPullRequest ? "default" : "secondary"}
           aria-current={!isPullRequest ? "page" : undefined}
-          className={`rounded-lg px-4 py-2 ${!isPullRequest ? "bg-foreground text-background" : "bg-muted text-muted-foreground"}`}
+          className="h-9 px-4"
         >
-          Upload file
-        </Link>
-        <Link
-          href="/pull-request"
+          {t("Upload file")}
+        </Button>
+        <Button
+          render={<Link href="/pull-request" />}
+          nativeButton={false}
+          variant={isPullRequest ? "default" : "secondary"}
           aria-current={isPullRequest ? "page" : undefined}
-          className={`rounded-lg px-4 py-2 ${isPullRequest ? "bg-foreground text-background" : "bg-muted text-muted-foreground"}`}
+          className="h-9 px-4"
         >
-          GitHub Pull Request
-        </Link>
+          {t("GitHub Pull Request")}
+        </Button>
       </nav>
       <section className="py-9">
         <p className="mb-3 text-xs font-semibold tracking-widest text-muted-foreground">
-          MAKE EVERY COMMIT CLEAR
+          {t("MAKE EVERY COMMIT CLEAR")}
         </p>
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Understand changes. Write better commits.
+          {t("Understand changes. Write better commits.")}
         </h1>
         <p className="mt-3 text-sm leading-7 text-muted-foreground">
           {isPullRequest
-            ? "Enter a public GitHub PR URL, review the changes, and let AI draft your commit message."
-            : "Upload a diff or patch, review the changes, and let AI draft your commit message."}
+            ? t(
+                "Enter a public GitHub PR URL, review the changes, and let AI draft your commit message.",
+              )
+            : t(
+                "Upload a diff or patch, review the changes, and let AI draft your commit message.",
+              )}
         </p>
       </section>
       {isPullRequest ? (
-        <section
-          className="rounded-xl border bg-muted/30 p-6"
-          aria-label="Import a GitHub PR"
+        <Card
+          role="region"
+          className="bg-muted/30 p-6"
+          aria-label={t("Import a GitHub PR")}
         >
           <form
             onSubmit={(event) => {
@@ -219,11 +265,11 @@ export default function CommitWorkspace({
               void loadPullRequest();
             }}
           >
-            <label htmlFor="pr-url" className="text-sm font-medium">
-              GitHub pull request URL
-            </label>
+            <Label htmlFor="pr-url" className="text-sm font-medium">
+              {t("GitHub pull request URL")}
+            </Label>
             <div className="mt-3 flex flex-col gap-3 sm:flex-row">
-              <input
+              <Input
                 id="pr-url"
                 type="url"
                 required
@@ -234,33 +280,35 @@ export default function CommitWorkspace({
                   setPrUrl(event.target.value);
                 }}
                 placeholder="https://github.com/owner/repo/pull/123"
-                className="min-w-0 flex-1 rounded-lg border bg-background px-3 py-2.5 text-sm"
+                className="h-10 flex-1 bg-background"
                 aria-describedby="pr-help"
               />
-              <button
+              <Button
                 type="submit"
                 disabled={reading || !prUrl.trim()}
-                className="flex items-center justify-center gap-2 rounded-lg bg-foreground px-5 py-2.5 text-sm text-background disabled:opacity-40"
+                size="lg"
+                className="h-10 px-5"
               >
-                {reading && <LoaderCircle className="size-4 animate-spin" />}
-                {reading ? "Loading…" : "Load PR"}
-              </button>
+                {reading && <Spinner aria-label={t("Loading…")} />}
+                {reading ? t("Loading…") : t("Load PR")}
+              </Button>
             </div>
             <p id="pr-help" className="mt-3 text-xs text-muted-foreground">
-              Public github.com repositories only. Private repositories are not
-              supported yet. Maximum diff size: 100 KB. Changes are sent to AI
-              only when you generate a message.
+              {t(
+                "Public github.com repositories only. Private repositories are not supported yet. Maximum diff size: 100 KB. Changes are sent to AI only when you generate a message.",
+              )}
             </p>
             <p role="status" className="sr-only">
               {reading
-                ? "Fetching changes from GitHub"
+                ? t("Fetching changes from GitHub")
                 : upload
-                  ? "PR changes loaded"
+                  ? t("PR changes loaded")
                   : ""}
             </p>
           </form>
           {upload?.pr && (
-            <div className="mt-5 border-t pt-4">
+            <div>
+              <Separator className="mb-4" />
               <a
                 href={upload.pr.url}
                 target="_blank"
@@ -272,17 +320,18 @@ export default function CommitWorkspace({
               <p className="mt-2 text-xs text-muted-foreground">
                 {upload.name} ·{" "}
                 {
-                  { open: "Open", closed: "Closed", merged: "Merged" }[
+                  { open: t("Open"), closed: t("Closed"), merged: t("Merged") }[
                     upload.pr.state
                   ]
                 }
               </p>
             </div>
           )}
-        </section>
+        </Card>
       ) : (
-        <section
-          aria-label="Upload a diff or patch"
+        <Card
+          role="region"
+          aria-label={t("Upload a diff or patch")}
           onDragOver={(event) => {
             event.preventDefault();
             setDragging(true);
@@ -293,49 +342,48 @@ export default function CommitWorkspace({
             setDragging(false);
             void load(event.dataTransfer.files[0]);
           }}
-          className={`relative rounded-xl border-2 border-dashed p-7 text-center transition-colors ${dragging ? "border-blue-500 bg-blue-50" : "border-border bg-muted/30"}`}
+          className={`relative gap-0 ring-0 border-2 border-dashed p-7 text-center transition-colors ${dragging ? "border-blue-500 bg-blue-50" : "border-border bg-muted/30"}`}
         >
           <Upload className="mx-auto mb-3 size-6 text-muted-foreground" />
-          <label className="cursor-pointer font-medium" htmlFor="diff-upload">
+          <Label
+            className="justify-center cursor-pointer font-medium"
+            htmlFor="diff-upload"
+          >
             {reading
-              ? "Reading…"
+              ? t("Reading…")
               : upload
                 ? upload.name
-                : "Drop a file here, or click to browse"}
-          </label>
-          <input
+                : t("Drop a file here, or click to browse")}
+          </Label>
+          <Input
             id="diff-upload"
             type="file"
             accept=".diff,.patch"
             className="absolute inset-0 h-full w-full cursor-pointer opacity-0 focus:opacity-100"
-            aria-label="Select a diff or patch file"
+            aria-label={t("Select a diff or patch file")}
             onChange={(event) => {
               void load(event.target.files?.[0]);
               event.target.value = "";
             }}
           />
           <p className="mt-2 text-xs text-muted-foreground">
-            .diff / .patch · Up to 100 KB · Changes are sent to AI only when
-            generating
+            {t(
+              ".diff / .patch · Up to 100 KB · Changes are sent to AI only when generating",
+            )}
           </p>
-        </section>
+        </Card>
       )}
       {error && (
-        <div
-          role="alert"
-          className="mt-4 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800"
-        >
-          {error}
-        </div>
+        <Alert variant="destructive" className="mt-4">
+          <AlertDescription>{t(error)}</AlertDescription>
+        </Alert>
       )}
       <div className="my-7 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
-        <section className="min-w-0" aria-label="File diffs">
+        <section className="min-w-0" aria-label={t("File diffs")}>
           <div className="mb-4 flex items-center justify-between gap-3">
             <h2 className="flex items-center gap-2 font-semibold">
-              <FileDiff className="size-4" /> Changed files{" "}
-              <span className="rounded-full bg-muted px-2 text-xs leading-6">
-                {files.length}
-              </span>
+              <FileDiff className="size-4" /> {t("Changed files")}{" "}
+              <Badge variant="secondary">{files.length}</Badge>
             </h2>
             {upload && (
               <p className="font-mono text-xs">
@@ -345,12 +393,12 @@ export default function CommitWorkspace({
             )}
           </div>
           {!upload ? (
-            <div className="rounded-xl border px-6 py-20 text-center text-sm text-muted-foreground">
+            <Card className="gap-0 px-6 py-20 text-center text-sm text-muted-foreground">
               {isPullRequest ? (
-                "Load a public PR to review its changes line by line."
+                t("Load a public PR to review its changes line by line.")
               ) : (
                 <>
-                  Upload a file to review its changes line by line.
+                  {t("Upload a file to review its changes line by line.")}
                   <p className="mt-3 font-mono text-xs">
                     git diff &gt; changes.diff
                   </p>
@@ -359,27 +407,31 @@ export default function CommitWorkspace({
                   </p>
                 </>
               )}
-            </div>
+            </Card>
           ) : (
             <div className="space-y-4">
               {files.map((file, index) => (
-                <details
+                <Collapsible
                   // biome-ignore lint/suspicious/noArrayIndexKey: Files are an immutable snapshot, including repeated paths in patch series.
                   key={`${upload.name}-${index}`}
-                  open
+                  defaultOpen
                   className="overflow-hidden rounded-lg border"
                 >
-                  <summary className="cursor-pointer break-all bg-muted/60 px-4 py-3 font-mono text-xs font-semibold">
-                    {file.name}
+                  <CollapsibleTrigger className="group flex w-full items-center cursor-pointer break-all bg-muted/60 px-4 py-3 text-left font-mono text-xs font-semibold outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring">
+                    <ChevronDown
+                      aria-hidden="true"
+                      className="mr-2 size-4 shrink-0 transition-transform group-data-[panel-open]:rotate-180"
+                    />
+                    <span className="min-w-0 flex-1">{file.name}</span>
                     <span className="ml-3 whitespace-nowrap font-normal">
                       <span className="text-green-700">+{file.additions}</span>{" "}
                       <span className="text-red-700">−{file.deletions}</span>
                     </span>
-                  </summary>
-                  <div className="overflow-x-auto">
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="overflow-x-auto">
                     <table
                       className="diff-table w-full border-collapse font-mono text-xs"
-                      aria-label={`Diff for ${file.name}`}
+                      aria-label={t("Diff for {file}", { file: file.name })}
                     >
                       <tbody>
                         {file.lines.map((line, row) => (
@@ -398,8 +450,8 @@ export default function CommitWorkspace({
                         ))}
                       </tbody>
                     </table>
-                  </div>
-                </details>
+                  </CollapsibleContent>
+                </Collapsible>
               ))}
             </div>
           )}
@@ -408,84 +460,97 @@ export default function CommitWorkspace({
           {upload &&
             (upload.parsed.messages.length > 0 ||
               /\.patch$/i.test(upload.name)) && (
-              <section className="rounded-xl border p-5">
-                <h2 className="mb-4 text-sm font-semibold">
-                  Original commit message
-                </h2>
-                {upload.parsed.messages.length ? (
-                  upload.parsed.messages.map((original, index) => (
-                    <pre
-                      // biome-ignore lint/suspicious/noArrayIndexKey: Messages are immutable and may have identical text in patch series.
-                      key={index}
-                      className="mb-3 whitespace-pre-wrap break-words rounded-lg bg-muted/60 p-3 font-mono text-xs leading-6"
-                    >
-                      {original}
-                    </pre>
-                  ))
+              <Card className="gap-0 p-5">
+                <CardHeader className="mb-4 px-0">
+                  <h2 className="text-sm font-semibold">
+                    {t("Original commit message")}
+                  </h2>
+                </CardHeader>
+                <CardContent className="px-0">
+                  {upload.parsed.messages.length ? (
+                    upload.parsed.messages.map((original, index) => (
+                      <pre
+                        // biome-ignore lint/suspicious/noArrayIndexKey: Messages are immutable and may have identical text in patch series.
+                        key={index}
+                        className="mb-3 whitespace-pre-wrap break-words rounded-lg bg-muted/60 p-3 font-mono text-xs leading-6"
+                      >
+                        {original}
+                      </pre>
+                    ))
+                  ) : (
+                    <p className="text-sm text-muted-foreground">
+                      {t("This patch does not include a commit message.")}
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+          <Card className="gap-0 p-5">
+            <CardHeader className="px-0">
+              <h2 className="flex items-center gap-2 text-sm font-semibold">
+                <Sparkles className="size-4" />
+                {t("AI commit message")}
+              </h2>
+              <CardDescription className="mb-5 mt-2 text-xs leading-6">
+                {t(
+                  "Generate an English commit message following the Angular commit guidelines.",
+                )}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="px-0">
+              <Button
+                type="button"
+                disabled={!upload || busy || reading}
+                onClick={() => void generate()}
+                size="lg"
+                className="h-10 w-full"
+              >
+                {busy ? (
+                  <Spinner aria-label={t("Loading…")} />
                 ) : (
-                  <p className="text-sm text-muted-foreground">
-                    This patch does not include a commit message.
+                  <Sparkles className="size-4" />
+                )}
+                {busy
+                  ? t("Analyzing changes…")
+                  : message
+                    ? t("Regenerate")
+                    : t("Generate commit message")}
+              </Button>
+              <div aria-live="polite" aria-busy={busy}>
+                {message ? (
+                  <>
+                    <pre className="mt-4 whitespace-pre-wrap break-words rounded-lg bg-muted/60 p-4 font-mono text-xs leading-6">
+                      {message}
+                    </pre>
+                    <Button
+                      type="button"
+                      onClick={() => void copy()}
+                      variant="ghost"
+                      size="sm"
+                      className="mt-3"
+                    >
+                      {copied ? (
+                        <Check className="size-3.5" />
+                      ) : (
+                        <Copy className="size-3.5" />
+                      )}
+                      {copied ? t("Copied") : t("Copy message")}
+                    </Button>
+                  </>
+                ) : (
+                  <p className="mt-5 text-center text-xs text-muted-foreground">
+                    {busy
+                      ? t("Generating your commit message. Please wait.")
+                      : t("Your generated commit message will appear here.")}
                   </p>
                 )}
-              </section>
-            )}
-          <section className="rounded-xl border p-5">
-            <h2 className="flex items-center gap-2 text-sm font-semibold">
-              <Sparkles className="size-4" /> AI commit message
-            </h2>
-            <p className="mb-5 mt-2 text-xs leading-6 text-muted-foreground">
-              Generate an English commit message following the Angular commit
-              guidelines.
-            </p>
-            <button
-              type="button"
-              disabled={!upload || busy || reading}
-              onClick={() => void generate()}
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              {busy ? (
-                <LoaderCircle className="size-4 animate-spin" />
-              ) : (
-                <Sparkles className="size-4" />
-              )}
-              {busy
-                ? "Analyzing changes…"
-                : message
-                  ? "Regenerate"
-                  : "Generate commit message"}
-            </button>
-            <div aria-live="polite" aria-busy={busy}>
-              {message ? (
-                <>
-                  <pre className="mt-4 whitespace-pre-wrap break-words rounded-lg bg-muted/60 p-4 font-mono text-xs leading-6">
-                    {message}
-                  </pre>
-                  <button
-                    type="button"
-                    onClick={() => void copy()}
-                    className="mt-3 flex items-center gap-2 text-xs"
-                  >
-                    {copied ? (
-                      <Check className="size-3.5" />
-                    ) : (
-                      <Copy className="size-3.5" />
-                    )}
-                    {copied ? "Copied" : "Copy message"}
-                  </button>
-                </>
-              ) : (
-                <p className="mt-5 text-center text-xs text-muted-foreground">
-                  {busy
-                    ? "Generating your commit message. Please wait."
-                    : "Your generated commit message will appear here."}
-                </p>
-              )}
-            </div>
-          </section>
+              </div>
+            </CardContent>
+          </Card>
         </aside>
       </div>
       <footer className="border-t py-5 text-xs text-muted-foreground">
-        Yushi · Clearer commits start here.
+        {t("Yushi · Clearer commits start here.")}
       </footer>
     </main>
   );

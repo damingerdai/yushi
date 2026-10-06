@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="820" viewBox="0 0 1200 820">
+<title>Yushi brand identity — the review seal</title>
+<rect width="1200" height="820" fill="#F7F3EA"/>
+<text x="64" y="60" font-family="Arial, sans-serif" font-size="12" letter-spacing="3" fill="#66695F">YUSHI / BRAND IDENTITY</text>
+<text x="1136" y="60" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#66695F">01 — THE REVIEW SEAL</text>
+<path d="M64 84H1136" stroke="#D8D0C2"/>
+<g transform="translate(105 170) scale(1.55)">  <path d="M17 4H111L124 17V111L111 124H17L4 111V17Z" fill="#A8322D"/>
+  <path d="M23 15H105L113 23V105L105 113H23L15 105V23Z" fill="none" stroke="#FFF8EB" stroke-width="3"/>
+  <path d="M43 35H34L23 64L34 93H43L32 64Z" fill="#FFF8EB"/>
+  <path d="M85 35H94L105 64L94 93H85L96 64Z" fill="#FFF8EB"/>
+  <path d="M43 64L57 73L85 43L62 86H56Z" fill="#FFF8EB"/>
+  <path d="M56 29H72V33H56Z" fill="#FFF8EB"/>
+  <path d="M56 96H72V100H56Z" fill="#FFF8EB"/>
+</g>
+<text x="350" y="301" fill="#242722" font-family="Georgia, 'Times New Roman', serif" font-size="126" letter-spacing="-5">Yushi</text>
+<text x="358" y="345" fill="#66695F" font-family="Arial, sans-serif" font-size="13" letter-spacing="4.4">THOUGHTFUL CODE REVIEW</text>
+<text x="105" y="430" font-family="Georgia, 'Times New Roman', serif" font-size="24" fill="#242722">An ancient duty. A modern eye for code.</text>
+<text x="105" y="464" font-family="Arial, sans-serif" font-size="15" fill="#66695F">Inspired by the imperial censor: read closely, question carefully, uphold quality.</text>
+<path d="M64 520H1136" stroke="#D8D0C2"/>
+<rect x="64" y="553" width="342" height="194" rx="10" fill="#FFFFFF"/>
+<g transform="translate(96 590) scale(.75)">  <path d="M17 4H111L124 17V111L111 124H17L4 111V17Z" fill="#A8322D"/>
+  <path d="M23 15H105L113 23V105L105 113H23L15 105V23Z" fill="none" stroke="#FFF8EB" stroke-width="3"/>
+  <path d="M43 35H34L23 64L34 93H43L32 64Z" fill="#FFF8EB"/>
+  <path d="M85 35H94L105 64L94 93H85L96 64Z" fill="#FFF8EB"/>
+  <path d="M43 64L57 73L85 43L62 86H56Z" fill="#FFF8EB"/>
+  <path d="M56 29H72V33H56Z" fill="#FFF8EB"/>
+  <path d="M56 96H72V100H56Z" fill="#FFF8EB"/>
+</g>
+<text x="218" y="612" font-family="Arial, sans-serif" font-size="12" letter-spacing="1.5" fill="#66695F">VERMILION SEAL</text>
+<text x="218" y="640" font-family="Arial, sans-serif" font-size="13" fill="#242722">Authority, with care.</text>
+<rect x="430" y="553" width="342" height="194" rx="10" fill="#242722"/>
+<g transform="translate(463 590) scale(.75)">  <path d="M17 4H111L124 17V111L111 124H17L4 111V17Z" fill="#FFF8EB"/>
+  <path d="M23 15H105L113 23V105L105 113H23L15 105V23Z" fill="none" stroke="#242722" stroke-width="3"/>
+  <path d="M43 35H34L23 64L34 93H43L32 64Z" fill="#242722"/>
+  <path d="M85 35H94L105 64L94 93H85L96 64Z" fill="#242722"/>
+  <path d="M43 64L57 73L85 43L62 86H56Z" fill="#242722"/>
+  <path d="M56 29H72V33H56Z" fill="#242722"/>
+  <path d="M56 96H72V100H56Z" fill="#242722"/>
+</g>
+<text x="583" y="612" font-family="Arial, sans-serif" font-size="12" letter-spacing="1.5" fill="#CBC8BE">INK &amp; PAPER</text>
+<text x="583" y="640" font-family="Arial, sans-serif" font-size="13" fill="#FFF8EB">One color. Clear intent.</text>
+<rect x="796" y="553" width="340" height="194" rx="10" fill="#ECE6DA"/>
+<g transform="translate(828 590) scale(.375)">  <path d="M17 4H111L124 17V111L111 124H17L4 111V17Z" fill="#A8322D"/>
+  <path d="M23 15H105L113 23V105L105 113H23L15 105V23Z" fill="none" stroke="#FFF8EB" stroke-width="3"/>
+  <path d="M43 35H34L23 64L34 93H43L32 64Z" fill="#FFF8EB"/>
+  <path d="M85 35H94L105 64L94 93H85L96 64Z" fill="#FFF8EB"/>
+  <path d="M43 64L57 73L85 43L62 86H56Z" fill="#FFF8EB"/>
+  <path d="M56 29H72V33H56Z" fill="#FFF8EB"/>
+  <path d="M56 96H72V100H56Z" fill="#FFF8EB"/>
+</g>
+<g transform="translate(896 614) scale(.1875)">  <path d="M17 4H111L124 17V111L111 124H17L4 111V17Z" fill="#A8322D"/>
+  <path d="M23 15H105L113 23V105L105 113H23L15 105V23Z" fill="none" stroke="#FFF8EB" stroke-width="3"/>
+  <path d="M43 35H34L23 64L34 93H43L32 64Z" fill="#FFF8EB"/>
+  <path d="M85 35H94L105 64L94 93H85L96 64Z" fill="#FFF8EB"/>
+  <path d="M43 64L57 73L85 43L62 86H56Z" fill="#FFF8EB"/>
+  <path d="M56 29H72V33H56Z" fill="#FFF8EB"/>
+  <path d="M56 96H72V100H56Z" fill="#FFF8EB"/>
+</g>
+<g transform="translate(940 622) scale(.125)">  <path d="M17 4H111L124 17V111L111 124H17L4 111V17Z" fill="#A8322D"/>
+  <path d="M23 15H105L113 23V105L105 113H23L15 105V23Z" fill="none" stroke="#FFF8EB" stroke-width="3"/>
+  <path d="M43 35H34L23 64L34 93H43L32 64Z" fill="#FFF8EB"/>
+  <path d="M85 35H94L105 64L94 93H85L96 64Z" fill="#FFF8EB"/>
+  <path d="M43 64L57 73L85 43L62 86H56Z" fill="#FFF8EB"/>
+  <path d="M56 29H72V33H56Z" fill="#FFF8EB"/>
+  <path d="M56 96H72V100H56Z" fill="#FFF8EB"/>
+</g>
+<text x="828" y="704" font-family="Arial, sans-serif" font-size="12" letter-spacing="1.5" fill="#66695F">48 / 24 / 16 PX</text>
+<text x="64" y="790" font-family="Arial, sans-serif" font-size="11" fill="#777B70">VERMILION #A8322D     ·     INK #242722     ·     PAPER #FFF8EB</text>
+</svg>

@@ -11,6 +11,16 @@ bun run dev:portal
 
 Visit http://localhost:3000.
 
+Use the header selector to switch between English and Simplified Chinese. English
+is the default; a `yushi-locale` cookie preserves the selection for one year.
+Server rendering reads that cookie to set the initial UI language and HTML `lang`.
+Switching languages preserves loaded changes and generated messages. The UI and
+error messages are localized; original content and English AI output are unchanged.
+
+Translations live in `src/lib/i18n/zh.ts`, keyed by English source messages.
+Use `useLocale().t()` for application copy and keep user-provided content outside
+translation calls. Add translations when introducing or changing an error message.
+
 ## Common commands
 
 Run these commands from this directory:
@@ -19,10 +29,15 @@ Run these commands from this directory:
 bun run build
 bun run start
 bun run typecheck
-bunx shadcn@latest add input
 ```
 
-Pages are in `src/app`, components are in `src/components/ui`, and the theme is in `src/app/globals.css`.
+Pages are in `src/app`; feature components are in `src/components`. Reusable
+shadcn/ui components and theme styles live in `../../packages/ui`, exposed as
+`@yushi/ui`. `src/app/globals.css` imports the shared theme and adds diff styles.
+The shared library uses Base UI (`base-nova`), including the language menu.
+
+To add another component, run `bunx --no-install shadcn add tooltip` from
+`packages/ui`. Portal's `components.json` routes shared UI imports to that package.
 Use `@/*` to import modules from `src`.
 
 - `/`: Upload a `.diff` or `.patch`, review changes and original patch messages,

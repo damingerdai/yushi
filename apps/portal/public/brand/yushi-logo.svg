@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="128" viewBox="0 0 480 128"><title>Yushi — thoughtful code review</title>  <path d="M17 4H111L124 17V111L111 124H17L4 111V17Z" fill="#A8322D"/>
+  <path d="M23 15H105L113 23V105L105 113H23L15 105V23Z" fill="none" stroke="#FFF8EB" stroke-width="3"/>
+  <path d="M43 35H34L23 64L34 93H43L32 64Z" fill="#FFF8EB"/>
+  <path d="M85 35H94L105 64L94 93H85L96 64Z" fill="#FFF8EB"/>
+  <path d="M43 64L57 73L85 43L62 86H56Z" fill="#FFF8EB"/>
+  <path d="M56 29H72V33H56Z" fill="#FFF8EB"/>
+  <path d="M56 96H72V100H56Z" fill="#FFF8EB"/>
+<text x="155" y="83" fill="#242722" font-family="Georgia, 'Times New Roman', serif" font-size="76" letter-spacing="-3">Yushi</text><text x="158" y="110" fill="#66695F" font-family="Arial, sans-serif" font-size="10" letter-spacing="2.6">THOUGHTFUL CODE REVIEW</text></svg>
