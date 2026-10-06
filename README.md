@@ -71,6 +71,27 @@ Run parser and API checks with `bun test tests/portal.test.ts`.
 
 ## Checks and builds
 
+Biome provides shared formatting, linting, and import organization for all workspaces
+and root-level tests. Run these commands from the repository root:
+
+```bash
+bun run format        # Format supported files in place
+bun run format:check  # Check formatting without writing
+bun run lint          # Run lint rules
+bun run lint:fix      # Apply safe lint fixes
+bun run check         # Check formatting, lint, and imports (for CI)
+bun run check:fix     # Apply formatting, safe lint fixes, and import organization
+```
+
+The root `biome.json` uses two-space indentation, double quotes, recommended lint
+rules, and Tailwind CSS directive support. Non-null assertions remain allowed for
+the existing bounds-checked parser and TypeScript's `noUncheckedIndexedAccess`.
+Git-ignored files, build output, generated Next.js declarations, and `bun.lock`
+are excluded. Unsupported file types such as Markdown are left unchanged.
+Biome is pinned in the root development dependencies; a global install is not required.
+Editor integrations should use this workspace version and the root configuration.
+See the [Biome documentation](https://biomejs.dev/installation/quick-start/).
+
 ```bash
 bun run typecheck
 bun run build

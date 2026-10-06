@@ -1,21 +1,13 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
-  "extends": [
-    "//"
-  ],
+  "extends": ["//"],
   "tasks": {
     "build": {
-      "outputs": [
-        ".next/**",
-        "!.next/cache/**",
-        "!.next/dev/**"
-      ]
+      "outputs": [".next/**", "!.next/cache/**", "!.next/dev/**"]
     },
     "dev": {
       "persistent": true,
-      "passThroughEnv": [
-        "DEEPSEEK_API_KEY"
-      ]
+      "passThroughEnv": ["DEEPSEEK_API_KEY"]
     }
   }
 }

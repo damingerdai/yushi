@@ -11,11 +11,18 @@
     "dev": "turbo run dev --filter=@yushi/cli --",
     "dev:portal": "turbo run dev --filter=@yushi/portal --",
     "build": "turbo run build",
-    "typecheck": "turbo run typecheck"
+    "typecheck": "turbo run typecheck",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write .",
+    "check": "biome check .",
+    "check:fix": "biome check --write ."
   },
   "devDependencies": {
+    "@biomejs/biome": "2.5.15",
+    "@types/bun": "latest",
     "turbo": "^2",
-    "typescript": "^7",
-    "@types/bun": "latest"
+    "typescript": "^7"
   }
 }
