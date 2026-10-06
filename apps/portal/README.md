@@ -1,5 +1,8 @@
 # Yushi Portal
 
+_Ancient Wisdom. Modern Code Review._
+_古有御史明察秋毫，今有 AI 守护代码质量_
+
 A web app built with the Next.js App Router, Tailwind CSS 4, and shadcn/ui.
 
 Install dependencies and start the app from the repository root:

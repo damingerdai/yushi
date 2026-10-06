@@ -41,6 +41,8 @@ export const zh: Record<string, string> = {
   "Upload file": "上传文件",
   "MAKE EVERY COMMIT CLEAR": "让每一次提交更清晰",
   "Understand changes. Write better commits.": "读懂变更，写好提交。",
+  "Ancient Wisdom. Modern Code Review.":
+    "古有御史明察秋毫，今有 AI 守护代码质量",
   "Enter a public GitHub PR URL, review the changes, and let AI draft your commit message.":
     "输入公开 GitHub PR 链接，查看代码差异，再让 AI 为你总结 commit message。",
   "Upload a diff or patch, review the changes, and let AI draft your commit message.":

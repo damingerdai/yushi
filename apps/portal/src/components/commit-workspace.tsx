@@ -202,11 +202,18 @@ export default function CommitWorkspace({
             height={36}
             unoptimized
           />
-          <span className="font-[Georgia,'Times_New_Roman',serif] text-3xl tracking-tight">
-            Yushi
-          </span>
-          <span className="text-sm font-normal text-muted-foreground">
-            / Portal
+          <span className="flex flex-col">
+            <span className="flex items-baseline gap-1.5">
+              <span className="font-[Georgia,'Times_New_Roman',serif] text-2xl tracking-tight">
+                Yushi
+              </span>
+              <span className="text-sm font-normal text-muted-foreground">
+                / Portal
+              </span>
+            </span>
+            <span className="text-xs text-muted-foreground">
+              {t("Ancient Wisdom. Modern Code Review.")}
+            </span>
           </span>
         </Link>
         <div className="flex items-center gap-3">

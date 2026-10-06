@@ -1,5 +1,8 @@
 # yushi
 
+_Ancient Wisdom. Modern Code Review._
+_古有御史明察秋毫，今有 AI 守护代码质量_
+
 A Git commit message assistant managed with Bun workspaces and Turborepo.
 
 Portal supports English and Simplified Chinese through the header language selector,
