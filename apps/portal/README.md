@@ -56,3 +56,13 @@ server. Diffs are limited to 100 KB and are sent to AI only when generating.
 GitHub requests use the `@yushi/github` workspace library in `packages/github`.
 The API route keeps Portal's diff validation and converts library errors to HTTP
 responses; the library can also be consumed independently by other workspaces.
+
+## Rate limiting
+
+When deployed on Vercel, add the Upstash Redis integration from the Vercel
+Marketplace and create a database; it injects `UPSTASH_REDIS_REST_URL` and
+`UPSTASH_REDIS_REST_TOKEN` automatically. With both set, each client IP may
+call `/api/commit-message` 10 times per hour and `/api/pull-request` 30 times
+per hour, tracked in `src/lib/rate-limit.ts`. Exceeded clients receive a 429
+with `Retry-After`. Without the variables (local development) routes stay
+unlimited, and Redis outages fail open so the app keeps working.

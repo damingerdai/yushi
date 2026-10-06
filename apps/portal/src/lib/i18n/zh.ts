@@ -9,6 +9,7 @@ export const zh: Record<string, string> = {
   "GitHub rate limit reached. Please try again later.":
     "GitHub 请求频率受限，请稍后重试。",
   "GitHub rate limit reached": "GitHub 请求频率受限",
+  "Too many requests. Please try again later.": "请求过于频繁，请稍后重试。",
   "GitHub denied access. Only publicly accessible repositories are supported. Please try again later.":
     "GitHub 拒绝访问；目前仅支持可公开访问的仓库，请稍后重试。",
   "Unable to retrieve the PR from GitHub. Please try again later.":

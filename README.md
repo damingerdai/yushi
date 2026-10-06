@@ -42,6 +42,11 @@ cp .env.example .env
 Set `DEEPSEEK_API_KEY` in the root `.env` file or as an environment variable.
 Bun loads `.env` automatically; Turbo's dev task allows this variable to pass through.
 
+Portal deployments on Vercel should also add the Upstash Redis integration,
+which injects `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` to enable
+per-IP rate limits on the API routes. See
+[apps/portal/README.md](apps/portal/README.md#rate-limiting).
+
 ## Usage
 
 ```bash

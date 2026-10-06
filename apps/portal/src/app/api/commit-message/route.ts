@@ -1,6 +1,9 @@
 import { MAX_DIFF_BYTES, parseDiff } from "@/lib/diff";
+import { rateLimitResponse } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
+  const limited = await rateLimitResponse("commit-message", request);
+  if (limited) return limited;
   let parsed: ReturnType<typeof parseDiff>;
   try {
     // Bound the streamed request as well as the actual diff, including clients
