@@ -59,8 +59,15 @@ bunx shadcn@latest add input
 ```
 
 Portal uses the Next.js App Router, with pages in `apps/portal/src/app`
-and UI components in `apps/portal/src/components/ui`. It currently provides a basic home page;
-commit message generation is not yet connected.
+and UI components in `apps/portal/src/components/ui`. Upload or drop a `.diff` or
+`.patch` file (up to 100 KB) to review GitHub-style unified changes, line numbers,
+and original format-patch commit messages. Click the generation button to produce
+and copy a new Angular-style commit message using the existing core commit agent.
+Files are parsed in the browser; generation sends the changes to the server and DeepSeek.
+The server requires `DEEPSEEK_API_KEY`; never expose it as a `NEXT_PUBLIC_` variable.
+When starting Portal directly, export the key or configure `apps/portal/.env.local`.
+
+Run parser and API checks with `bun test tests/portal.test.ts`.
 
 ## Checks and builds
 
