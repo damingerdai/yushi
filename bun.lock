@@ -28,6 +28,7 @@
       "dependencies": {
         "@base-ui/react": "^1.8.0",
         "@yushi/core": "workspace:*",
+        "@yushi/github": "workspace:*",
         "class-variance-authority": "^0.7.1",
         "cn": "^0.4.0",
         "lucide-react": "^1.48.0",
@@ -54,6 +55,14 @@
         "@mastra/core": "^1.71.0",
         "zod": "^4.6.5",
       },
+      "devDependencies": {
+        "@types/bun": "latest",
+        "typescript": "^7",
+      },
+    },
+    "packages/github": {
+      "name": "@yushi/github",
+      "version": "0.0.0",
       "devDependencies": {
         "@types/bun": "latest",
         "typescript": "^7",
@@ -406,6 +415,8 @@
     "@yushi/cli": ["@yushi/cli@workspace:apps/cli"],
 
     "@yushi/core": ["@yushi/core@workspace:packages/core"],
+
+    "@yushi/github": ["@yushi/github@workspace:packages/github"],
 
     "@yushi/portal": ["@yushi/portal@workspace:apps/portal"],
 

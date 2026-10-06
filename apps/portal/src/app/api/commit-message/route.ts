@@ -7,7 +7,10 @@ export async function POST(request: Request) {
     // that omit or forge Content-Length.
     const reader = request.body?.getReader();
     if (!reader)
-      return Response.json({ error: "请求不能为空。" }, { status: 400 });
+      return Response.json(
+        { error: "The request body must not be empty." },
+        { status: 400 },
+      );
     const chunks: Uint8Array[] = [];
     let size = 0;
     while (true) {
@@ -17,26 +20,30 @@ export async function POST(request: Request) {
       if (size > MAX_DIFF_BYTES * 6 + 1024) {
         await reader.cancel();
         return Response.json(
-          { error: "文件超过 100 KB，请拆分后上传。" },
+          {
+            error: "The file exceeds 100 KB. Please split it before uploading.",
+          },
           { status: 413 },
         );
       }
       chunks.push(value);
     }
     const body = JSON.parse(await new Blob(chunks as BlobPart[]).text());
-    if (typeof body?.diff !== "string") throw new Error("缺少 diff 内容。");
+    if (typeof body?.diff !== "string")
+      throw new Error("Diff content is missing.");
     parsed = parseDiff(body.diff);
   } catch {
     return Response.json(
       {
-        error: "无效的 diff 内容，请上传完整的 diff 或 patch（最大 100 KB）。",
+        error:
+          "Invalid diff content. Please upload a complete diff or patch (up to 100 KB).",
       },
       { status: 400 },
     );
   }
   if (!process.env.DEEPSEEK_API_KEY) {
     return Response.json(
-      { error: "服务端尚未配置 DEEPSEEK_API_KEY。" },
+      { error: "DEEPSEEK_API_KEY is not configured on the server." },
       { status: 503 },
     );
   }
@@ -54,7 +61,10 @@ export async function POST(request: Request) {
     );
   } catch {
     return Response.json(
-      { error: "AI 生成失败，请稍后重试或检查服务端模型配置。" },
+      {
+        error:
+          "AI generation failed. Please try again later or check the server model configuration.",
+      },
       { status: 502 },
     );
   }

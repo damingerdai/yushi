@@ -55,11 +55,15 @@ function path(value: string) {
 
 export function parseDiff(input: string): ParsedDiff {
   if (!input.trim())
-    throw new Error("文件为空，请上传包含变更的 diff 或 patch。");
+    throw new Error(
+      "The file is empty. Please upload a diff or patch containing changes.",
+    );
   if (new TextEncoder().encode(input).length > MAX_DIFF_BYTES)
-    throw new Error("文件超过 100 KB，请拆分后上传。");
+    throw new Error(
+      "The file exceeds 100 KB. Please split it before uploading.",
+    );
   if (input.includes("\0"))
-    throw new Error("请选择文本格式的 diff 或 patch 文件。");
+    throw new Error("Please select a plain-text diff or patch file.");
   const lines = input.replace(/\r\n/g, "\n").split("\n");
   const files: DiffFile[] = [];
   const messages: string[] = [];
@@ -71,7 +75,9 @@ export function parseDiff(input: string): ParsedDiff {
     nextLeft = 0;
   const create = (name: string) => {
     if (oldLeft || nextLeft)
-      throw new Error("Diff 区块不完整，请上传完整文件。");
+      throw new Error(
+        "The diff contains an incomplete hunk. Please upload the complete file.",
+      );
     file = { name, lines: [], additions: 0, deletions: 0 };
     files.push(file);
     oldLeft = nextLeft = 0;
@@ -80,7 +86,9 @@ export function parseDiff(input: string): ParsedDiff {
     const line = lines[i]!;
     if (/^From [0-9a-f]{40,64} /i.test(line)) {
       if (oldLeft || nextLeft)
-        throw new Error("Diff 区块不完整，请上传完整文件。");
+        throw new Error(
+          "The diff contains an incomplete hunk. Please upload the complete file.",
+        );
       file = undefined;
       continue;
     }
@@ -132,7 +140,9 @@ export function parseDiff(input: string): ParsedDiff {
     const hunk = /^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@/.exec(line);
     if (hunk) {
       if (oldLeft || nextLeft)
-        throw new Error("Diff 区块不完整，请上传完整文件。");
+        throw new Error(
+          "The diff contains an incomplete hunk. Please upload the complete file.",
+        );
       old = Number(hunk[1]);
       next = Number(hunk[3]);
       oldLeft = Number(hunk[2] ?? 1);
@@ -158,14 +168,20 @@ export function parseDiff(input: string): ParsedDiff {
         nextLeft--;
       } else if (line.startsWith("\\"))
         file.lines.push({ text: line, kind: "meta" });
-      else throw new Error("Diff 区块格式不完整，请检查文件内容。");
+      else
+        throw new Error(
+          "The diff hunk is malformed or incomplete. Please check the file contents.",
+        );
     } else if (line) file.lines.push({ text: line, kind: "meta" });
     diff.push(line);
   }
-  if (oldLeft || nextLeft) throw new Error("Diff 区块不完整，请上传完整文件。");
+  if (oldLeft || nextLeft)
+    throw new Error(
+      "The diff contains an incomplete hunk. Please upload the complete file.",
+    );
   if (!files.length)
     throw new Error(
-      "未找到可识别的 unified diff，请使用 git diff 或 git format-patch 导出。",
+      "No supported unified diff was found. Export your changes using git diff or git format-patch.",
     );
   return { files, messages, diff: diff.join("\n") };
 }

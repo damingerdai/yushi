@@ -2,6 +2,10 @@
 
 A Git commit message assistant managed with Bun workspaces and Turborepo.
 
+The interface, diagnostics, and generated commit messages use English.
+Uploaded diffs, original commit messages, PR titles, and filenames retain their
+original content and language.
+
 ## Project structure
 
 ```text
@@ -10,6 +14,7 @@ apps/
   portal/        # @yushi/portal: Next.js web app with Tailwind CSS and shadcn/ui
 packages/
   core/          # @yushi/core: Mastra agent, DeepSeek configuration, and Git tools
+  github/        # @yushi/github: reusable public GitHub PR client
 tsconfig.json    # Shared TypeScript configuration
 turbo.json       # Task dependencies and cache configuration
 ```
@@ -67,7 +72,24 @@ Files are parsed in the browser; generation sends the changes to the server and 
 The server requires `DEEPSEEK_API_KEY`; never expose it as a `NEXT_PUBLIC_` variable.
 When starting Portal directly, export the key or configure `apps/portal/.env.local`.
 
-Run parser and API checks with `bun test tests/portal.test.ts`.
+The `/pull-request` page accepts public GitHub pull request URLs, including links
+to the Files changed and Commits tabs. Load a PR to preview its title, status, and
+diff, then generate a commit message using the same core agent. The upload page
+and PR page share the diff viewer and generation UI.
+
+PR metadata and public visibility are fetched anonymously through the
+[GitHub REST API](https://docs.github.com/en/rest/pulls/pulls#get-a-pull-request).
+Diffs are downloaded from `https://patch-diff.githubusercontent.com/raw/{owner}/{repo}/pull/{number}.diff`.
+No GitHub token is needed or forwarded. Private repositories and GitHub Enterprise
+hosts are not supported. GitHub may return the same not-found response for private
+and nonexistent repositories. Rate limits, timeouts, empty changes, and diffs over
+100 KB are reported in the page; oversized diffs are rejected rather than truncated.
+
+GitHub access lives in the framework-independent `@yushi/github` workspace.
+Portal imports it through `workspace:*` and handles diff parsing and HTTP responses.
+See [packages/github/README.md](packages/github/README.md) for its API and options.
+
+Run parser, API, and GitHub library checks with `bun test tests packages/github`.
 
 ## Checks and builds
 
