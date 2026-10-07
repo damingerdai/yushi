@@ -26,11 +26,7 @@ export function LanguageSwitcher() {
         title={t("Language")}
         className="size-10 cursor-pointer rounded-xl text-muted-foreground"
       >
-        <Languages
-          className="size-[18px]"
-          strokeWidth={1.75}
-          aria-hidden="true"
-        />
+        <Languages className="size-4.5" strokeWidth={1.75} aria-hidden="true" />
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
@@ -50,7 +46,7 @@ export function LanguageSwitcher() {
               value={language.value}
               label={language.label}
               closeOnClick
-              className="min-h-10 cursor-pointer gap-3 rounded-lg data-[checked]:font-medium"
+              className="min-h-10 cursor-pointer gap-3 rounded-lg data-checked:font-medium"
             >
               <span
                 aria-hidden="true"
