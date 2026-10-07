@@ -186,3 +186,9 @@ serializable success or error result. Both Portal operations use Server Actions 
 Next.js applies its default 1 MB action request limit; diff content is independently
 limited to 100 KB. Actions cannot be aborted from the browser; obsolete results
 are ignored after changing the input or leaving a page.
+
+## License
+
+Licensed under the [MIT License](LICENSE).
+
+Copyright (c) 2026 damingerdai.
