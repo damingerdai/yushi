@@ -28,13 +28,3 @@ test("portal validates diff completeness and file counts", () => {
     }),
   ).toThrow("incomplete");
 });
-
-test("route returns a non-cacheable validation error through the workspace package", async () => {
-  const { GET } = await import("../apps/portal/src/app/api/pull-request/route");
-  const response = await GET(
-    new Request("https://portal.test/api/pull-request?url=invalid"),
-  );
-  expect(response.status).toBe(400);
-  expect(response.headers.get("cache-control")).toBe("no-store");
-  expect((await response.json()).error).toContain("GitHub PR");
-});

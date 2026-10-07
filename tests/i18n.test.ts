@@ -1,5 +1,4 @@
 import { expect, test } from "bun:test";
-import { readApiResponse } from "../apps/portal/src/lib/api-response";
 import { parseDiff } from "../apps/portal/src/lib/diff";
 import { normalizeLocale, translate } from "../apps/portal/src/lib/i18n";
 
@@ -20,24 +19,16 @@ test("a retained error can be rendered in either language", () => {
     "文件为空，请上传包含变更的 diff 或 patch。",
   );
 });
-test("API JSON and HTML error responses can be localized", async () => {
-  for (const response of [
-    Response.json(
-      { error: "GitHub rate limit reached. Please try again later." },
-      { status: 429 },
+test("server action errors can be localized", () => {
+  expect(translate("zh-CN", "Too many requests. Please try again later.")).toBe(
+    "请求过于频繁，请稍后重试。",
+  );
+  expect(
+    translate(
+      "zh-CN",
+      "Invalid commit options. Check type, scope, and footer.",
     ),
-    new Response("<html>Bad gateway</html>", { status: 502 }),
-  ]) {
-    try {
-      await readApiResponse(response);
-      throw new Error("Expected request to fail");
-    } catch (error) {
-      const translated = translate("zh-CN", (error as Error).message);
-      expect(translated).toMatch(
-        /GitHub 请求频率受限|服务返回异常响应（HTTP 502）/,
-      );
-    }
-  }
+  ).toBe("提交选项无效，请检查类型、范围和页脚。");
 });
 test("dynamic limits and filenames keep their values", () => {
   expect(

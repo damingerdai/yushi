@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { MAX_DIFF_BYTES, parseDiff } from "../apps/portal/src/lib/diff";
+import { parseDiff } from "../apps/portal/src/lib/diff";
 
 const diff = `diff --git a/example.ts b/example.ts
 index 123..456 100644
@@ -68,58 +68,5 @@ describe("portal diff parser", () => {
       diff.replace("+extra\n", ""),
     ])
       expect(() => parseDiff(value)).toThrow();
-  });
-});
-
-describe("commit message API validation", () => {
-  test("rejects malformed JSON and invalid diff before model access", async () => {
-    const { POST } = await import(
-      "../apps/portal/src/app/api/commit-message/route"
-    );
-    for (const body of [
-      "{",
-      JSON.stringify({ diff: "hello" }),
-      JSON.stringify({ diff: 42 }),
-      JSON.stringify({ diff, options: { type: "feat\nfix" } }),
-      JSON.stringify({ diff, options: { footer: 42 } }),
-    ]) {
-      const response = await POST(
-        new Request("http://localhost/api/commit-message", {
-          method: "POST",
-          body,
-        }),
-      );
-      expect(response.status).toBe(400);
-    }
-  });
-  test("enforces streamed body limit without trusting Content-Length", async () => {
-    const { POST } = await import(
-      "../apps/portal/src/app/api/commit-message/route"
-    );
-    const response = await POST(
-      new Request("http://localhost/api/commit-message", {
-        method: "POST",
-        body: "x".repeat(MAX_DIFF_BYTES * 6 + 32_769),
-      }),
-    );
-    expect(response.status).toBe(413);
-  });
-  test("reports missing server configuration", async () => {
-    const { POST } = await import(
-      "../apps/portal/src/app/api/commit-message/route"
-    );
-    const original = process.env.DEEPSEEK_API_KEY;
-    delete process.env.DEEPSEEK_API_KEY;
-    try {
-      const response = await POST(
-        new Request("http://localhost/api/commit-message", {
-          method: "POST",
-          body: JSON.stringify({ diff }),
-        }),
-      );
-      expect(response.status).toBe(503);
-    } finally {
-      if (original !== undefined) process.env.DEEPSEEK_API_KEY = original;
-    }
   });
 });

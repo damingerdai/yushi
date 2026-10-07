@@ -4,12 +4,16 @@ import type { PullRequestInfo } from "@yushi/github";
 import {
   createContext,
   type ReactNode,
+  startTransition,
   useContext,
   useEffect,
   useRef,
   useState,
 } from "react";
-import { readApiResponse } from "@/lib/api-response";
+import {
+  generateCommitMessageAction,
+  loadPullRequestAction,
+} from "@/app/actions";
 import { MAX_DIFF_BYTES, type ParsedDiff, parseDiff } from "@/lib/diff";
 import { useCommitPreferences } from "./commit-preferences";
 
@@ -30,19 +34,17 @@ function useSessionState() {
   const [reading, setReading] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [copied, setCopied] = useState(false);
+  // Server Actions cannot be aborted; discard results from obsolete sessions.
   const version = useRef(0);
-  const controller = useRef<AbortController | null>(null);
   useEffect(
     () => () => {
       version.current++;
-      controller.current?.abort();
     },
     [],
   );
 
   function reset() {
     version.current++;
-    controller.current?.abort();
     setBusy(false);
     setReading(false);
     setError("");
@@ -54,17 +56,14 @@ function useSessionState() {
   async function loadPullRequest() {
     reset();
     const current = version.current;
-    const abort = new AbortController();
-    controller.current = abort;
     setReading(true);
     try {
-      const response = await fetch(
-        `/api/pull-request?url=${encodeURIComponent(prUrl.trim())}`,
-        { signal: abort.signal },
-      );
-      const data = await readApiResponse<{ raw: string; pr: PullRequestInfo }>(
-        response,
-      );
+      const result = await loadPullRequestAction(prUrl.trim());
+      if (!result.ok) {
+        if (current === version.current) setError(result.error);
+        return;
+      }
+      const data = result.data;
       const parsed = parseDiff(data.raw);
       if (current === version.current)
         setUpload({
@@ -73,13 +72,9 @@ function useSessionState() {
           parsed,
           pr: data.pr,
         });
-    } catch (cause) {
-      if (current === version.current && !abort.signal.aborted)
-        setError(
-          cause instanceof Error
-            ? cause.message
-            : "Unable to load the PR. Please try again.",
-        );
+    } catch {
+      if (current === version.current)
+        setError("Unable to load the PR. Please try again.");
     } finally {
       if (current === version.current) setReading(false);
     }
@@ -88,7 +83,6 @@ function useSessionState() {
   async function load(file?: File) {
     if (!file) return;
     const current = ++version.current;
-    controller.current?.abort();
     setBusy(false);
     setReading(true);
     setError("");
@@ -123,28 +117,22 @@ function useSessionState() {
       setError("Invalid commit options. Check type, scope, and footer.");
       return;
     }
-    const current = version.current;
-    const abort = new AbortController();
-    controller.current = abort;
+    const current = ++version.current;
     setBusy(true);
     setError("");
     setCopied(false);
     try {
-      const response = await fetch("/api/commit-message", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ diff: upload.raw, options: selected.data }),
-        signal: abort.signal,
-      });
-      const data = await readApiResponse<{ message: string }>(response);
-      if (current === version.current) setMessage(data.message);
-    } catch (cause) {
-      if (current === version.current && !abort.signal.aborted)
-        setError(
-          cause instanceof Error
-            ? cause.message
-            : "A network error occurred. Please try again.",
-        );
+      const result = await generateCommitMessageAction(
+        upload.raw,
+        selected.data,
+      );
+      if (current === version.current) {
+        if (result.ok) setMessage(result.data.message);
+        else setError(result.error);
+      }
+    } catch {
+      if (current === version.current)
+        setError("A network error occurred. Please try again.");
     } finally {
       if (current === version.current) setBusy(false);
     }
@@ -173,9 +161,9 @@ function useSessionState() {
     setDragging,
     copied,
     reset,
-    loadPullRequest,
+    loadPullRequest: () => startTransition(loadPullRequest),
     load,
-    generate,
+    generate: () => startTransition(generate),
     copy,
   };
 }

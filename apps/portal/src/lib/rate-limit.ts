@@ -2,7 +2,7 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
 /**
- * Per-client-IP limits for the expensive API routes. Limiting is active only
+ * Per-client-IP limits for the expensive server actions. Limiting is active only
  * when UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN are set, which the
  * Vercel Upstash integration injects; local development stays unlimited.
  */
@@ -37,40 +37,28 @@ function getLimiter(route: RateLimitedRoute): Ratelimit | undefined {
 }
 
 /** Vercel's edge proxy overwrites these headers, so clients cannot spoof them. */
-export function clientIp(request: Request): string {
-  const realIp = request.headers.get("x-real-ip")?.trim();
+export function clientIp(headers: Pick<Headers, "get">): string {
+  const realIp = headers.get("x-real-ip")?.trim();
   if (realIp) return realIp;
-  const forwarded = request.headers
-    .get("x-forwarded-for")
-    ?.split(",")[0]
-    ?.trim();
+  const forwarded = headers.get("x-forwarded-for")?.split(",")[0]?.trim();
   return forwarded || "unknown";
 }
 
 /**
- * Returns a 429 response when the client exceeds the route's limit, or
+ * Returns a serializable error when the client exceeds the action's limit, or
  * undefined to continue. Redis outages fail open: availability beats counting.
  */
-export async function rateLimitResponse(
+export async function checkRateLimit(
   route: RateLimitedRoute,
-  request: Request,
-): Promise<Response | undefined> {
+  headers: Pick<Headers, "get">,
+): Promise<{ error: string; retryAfter: number } | undefined> {
   const limiter = getLimiter(route);
   if (!limiter) return undefined;
   try {
-    const { success, reset } = await limiter.limit(clientIp(request));
+    const { success, reset } = await limiter.limit(clientIp(headers));
     if (success) return undefined;
     const retryAfter = Math.max(1, Math.ceil((reset - Date.now()) / 1000));
-    return Response.json(
-      { error: "Too many requests. Please try again later." },
-      {
-        status: 429,
-        headers: {
-          "Cache-Control": "no-store",
-          "Retry-After": String(retryAfter),
-        },
-      },
-    );
+    return { error: "Too many requests. Please try again later.", retryAfter };
   } catch (error) {
     console.error(`Rate limit check failed for ${route}:`, error);
     return undefined;

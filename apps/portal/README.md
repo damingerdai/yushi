@@ -50,19 +50,24 @@ Use `@/*` to import modules from `src`.
   not supported; no GitHub credentials are used.
 
 Both routes share `src/components/commit-workspace.tsx` and the existing core
-commit agent through `/api/commit-message`. Configure `DEEPSEEK_API_KEY` on the
+commit agent through `generateCommitMessageAction` in `src/app/actions.ts`. Configure `DEEPSEEK_API_KEY` on the
 server. Diffs are limited to 100 KB and are sent to AI only when generating.
 
 GitHub requests use the `@yushi/github` workspace library in `packages/github`.
-The API route keeps Portal's diff validation and converts library errors to HTTP
-responses; the library can also be consumed independently by other workspaces.
+`loadPullRequestAction` keeps Portal's diff validation and returns serializable
+success/error results. The library can also be consumed independently by other
+workspaces. Client components call both actions in React transitions, without
+custom API routes. Next.js enforces the default 1 MB action request limit and
+same-origin checks; each action also validates its arguments. Pending actions
+cannot be aborted from the browser, so the session ignores obsolete results.
 
 ## Rate limiting
 
 When deployed on Vercel, add the Upstash Redis integration from the Vercel
 Marketplace and create a database; it injects `UPSTASH_REDIS_REST_URL` and
 `UPSTASH_REDIS_REST_TOKEN` automatically. With both set, each client IP may
-call `/api/commit-message` 10 times per hour and `/api/pull-request` 30 times
-per hour, tracked in `src/lib/rate-limit.ts`. Exceeded clients receive a 429
-with `Retry-After`. Without the variables (local development) routes stay
+call `generateCommitMessageAction` 10 times per hour and `loadPullRequestAction`
+30 times per hour, tracked in `src/lib/rate-limit.ts`. The client IP comes from
+server-side request headers. Exceeded clients receive an action error with
+`retryAfter` seconds. Without the variables (local development) actions stay
 unlimited, and Redis outages fail open so the app keeps working.

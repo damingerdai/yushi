@@ -8,7 +8,7 @@ A Git commit message assistant managed with Bun workspaces and Turborepo.
 Portal supports English and Simplified Chinese through the header language selector,
 with English as the default. The selection persists in a one-year `yushi-locale`
 cookie and applies across both pages and reloads. Application errors are translated
-when displayed; the API and shared GitHub library retain English diagnostics.
+when displayed; Server Actions and the shared GitHub library retain English diagnostics.
 Generated commit messages continue to use English.
 Uploaded diffs, original commit messages, PR titles, and filenames retain their
 original content and language.
@@ -44,7 +44,7 @@ Bun loads `.env` automatically; Turbo's dev task allows this variable to pass th
 
 Portal deployments on Vercel should also add the Upstash Redis integration,
 which injects `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` to enable
-per-IP rate limits on the API routes. See
+per-IP rate limits on Server Actions. See
 [apps/portal/README.md](apps/portal/README.md#rate-limiting).
 
 ## Usage
@@ -95,7 +95,7 @@ diff, then generate a commit message using the same core agent. The upload page
 and PR page share the diff viewer and generation UI. Both routes live under the
 `(workspace)` route group, whose layout keeps the workspace shell and commit
 preferences mounted during navigation. Switching sources resets the source-specific
-diff and result and cancels pending requests; type, scope, and footer are retained.
+diff and result and ignores stale action results; type, scope, and footer are retained.
 Each page composes its own import component, diff preview, and commit message panel.
 A page-scoped session provider owns requests and results; the layout owns shared
 commit preferences and the header/navigation/footer.
@@ -113,7 +113,7 @@ GitHub access lives in the framework-independent `@yushi/github` workspace.
 Portal imports it through `workspace:*` and handles diff parsing and HTTP responses.
 See [packages/github/README.md](packages/github/README.md) for its API and options.
 
-Run parser, API, and GitHub library checks with `bun test tests packages/github`.
+Run parser, Server Action, and GitHub library checks with `bun test tests packages/github`.
 
 ## Checks and builds
 
@@ -180,5 +180,9 @@ bun apps/cli/src/index.ts --type release --scope cli
 Types allow up to 24 lowercase letters, digits, or hyphens, starting with a letter.
 Scopes allow up to 40 letters, digits, spaces, `.`, `_`, `/`, or `-`, starting
 with a letter or digit. Footers allow up to 4,000 characters. Surrounding whitespace
-is trimmed. The API accepts these fields as an optional `options` object alongside
-`diff`, and returns HTTP 400 for invalid options.
+is trimmed. `generateCommitMessageAction(diff, options)` accepts these fields and returns a
+serializable success or error result. Both Portal operations use Server Actions in
+`apps/portal/src/app/actions.ts`; there are no custom API route handlers.
+Next.js applies its default 1 MB action request limit; diff content is independently
+limited to 100 KB. Actions cannot be aborted from the browser; obsolete results
+are ignored after changing the input or leaving a page.
