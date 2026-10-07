@@ -5,6 +5,7 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./commit-options": "./src/commit-options.ts",
     "./git-diff": "./src/tools/git-diff.ts"
   },
   "scripts": {

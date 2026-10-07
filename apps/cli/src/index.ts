@@ -1,12 +1,18 @@
 import { resolve } from "node:path";
 import { parseArgs } from "node:util";
-
 import { mastra } from "@yushi/core";
+import {
+  buildCommitPrompt,
+  commitOptionsSchema,
+} from "@yushi/core/commit-options";
 import { readGitDiff } from "@yushi/core/git-diff";
 
 const { values } = parseArgs({
   args: Bun.argv.slice(2),
   options: {
+    type: { type: "string" },
+    scope: { type: "string" },
+    footer: { type: "string" },
     repo: {
       type: "string",
       default: process.cwd(),
@@ -19,6 +25,11 @@ const { values } = parseArgs({
 });
 
 async function main() {
+  const options = commitOptionsSchema.parse({
+    type: values.type,
+    scope: values.scope,
+    footer: values.footer,
+  });
   const repo = resolve(values.repo!);
 
   const { diff, files } = await readGitDiff({
@@ -39,17 +50,9 @@ async function main() {
 
   const agent = mastra.getAgent("commitAgent");
 
-  const response = await agent.generate(`
-Generate an Angular-compliant commit message.
-
-Modified files:
-${JSON.stringify(files)}
-
-Git diff:
-<git_diff>
-${diff}
-</git_diff>
-`);
+  const response = await agent.generate(
+    buildCommitPrompt(diff, files, options),
+  );
 
   console.log("\nSuggested commit message:\n");
   console.log(response.text);

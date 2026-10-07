@@ -1,7 +1,9 @@
 "use client";
 
+import { COMMIT_TYPES, commitOptionsSchema } from "@yushi/core/commit-options";
 import type { PullRequestInfo } from "@yushi/github";
 import { Alert, AlertDescription } from "@yushi/ui/components/alert";
+import { Autocomplete } from "@yushi/ui/components/autocomplete";
 import { Badge } from "@yushi/ui/components/badge";
 import { Button } from "@yushi/ui/components/button";
 import {
@@ -49,6 +51,9 @@ export default function CommitWorkspace({
 }) {
   const { t } = useLocale();
   const isPullRequest = mode === "pull-request";
+  const [type, setType] = useState("");
+  const [scope, setScope] = useState("");
+  const [footer, setFooter] = useState("");
   const [prUrl, setPrUrl] = useState("");
   const [upload, setUpload] = useState<UploadState>();
   const [error, setError] = useState("");
@@ -145,6 +150,11 @@ export default function CommitWorkspace({
 
   async function generate() {
     if (!upload || busy) return;
+    const selected = commitOptionsSchema.safeParse({ type, scope, footer });
+    if (!selected.success) {
+      setError("Invalid commit options. Check type, scope, and footer.");
+      return;
+    }
     const current = version.current;
     const abort = new AbortController();
     controller.current = abort;
@@ -155,7 +165,7 @@ export default function CommitWorkspace({
       const response = await fetch("/api/commit-message", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ diff: upload.raw }),
+        body: JSON.stringify({ diff: upload.raw, options: selected.data }),
         signal: abort.signal,
       });
       const data = await readApiResponse<{ message: string }>(response);
@@ -349,7 +359,7 @@ export default function CommitWorkspace({
             setDragging(false);
             void load(event.dataTransfer.files[0]);
           }}
-          className={`relative gap-0 ring-0 border-2 border-dashed p-7 text-center transition-colors ${dragging ? "border-blue-500 bg-blue-50" : "border-border bg-muted/30"}`}
+          className={`relative gap-0 ring-0 has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/50 has-[:focus-visible]:border-ring border-2 border-dashed p-7 text-center transition-colors ${dragging ? "border-blue-500 bg-blue-50" : "border-border bg-muted/30"}`}
         >
           <Upload className="mx-auto mb-3 size-6 text-muted-foreground" />
           <Label
@@ -366,7 +376,7 @@ export default function CommitWorkspace({
             id="diff-upload"
             type="file"
             accept=".diff,.patch"
-            className="absolute inset-0 h-full w-full cursor-pointer opacity-0 focus:opacity-100"
+            className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
             aria-label={t("Select a diff or patch file")}
             onChange={(event) => {
               void load(event.target.files?.[0]);
@@ -505,6 +515,44 @@ export default function CommitWorkspace({
               </CardDescription>
             </CardHeader>
             <CardContent className="px-0">
+              <fieldset disabled={busy} className="mb-5 space-y-3">
+                <legend className="mb-3 text-sm font-medium">
+                  {t("Commit options")}
+                </legend>
+                <Label htmlFor="commit-type">{t("Type")}</Label>
+                <Autocomplete
+                  id="commit-type"
+                  items={COMMIT_TYPES}
+                  value={type}
+                  maxLength={24}
+                  placeholder={t("Auto or custom type")}
+                  onValueChange={setType}
+                  disabled={busy}
+                />
+                <Label htmlFor="commit-scope">{t("Scope")}</Label>
+                <Input
+                  id="commit-scope"
+                  value={scope}
+                  maxLength={40}
+                  placeholder={t("Auto (e.g. core, router)")}
+                  onChange={(event) => setScope(event.target.value)}
+                />
+                <Label htmlFor="commit-footer">{t("Footer")}</Label>
+                <textarea
+                  id="commit-footer"
+                  value={footer}
+                  maxLength={4000}
+                  rows={4}
+                  placeholder={"Fixes #123\nBREAKING CHANGE: ..."}
+                  onChange={(event) => setFooter(event.target.value)}
+                  className="w-full rounded-lg border bg-background p-3 text-sm"
+                />
+                <p className="text-xs text-muted-foreground">
+                  {t(
+                    "Leave fields blank for automatic generation. Custom types extend the Angular standard. Footer text is preserved.",
+                  )}
+                </p>
+              </fieldset>
               <Button
                 type="button"
                 disabled={!upload || busy || reading}

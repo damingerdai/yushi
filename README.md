@@ -149,3 +149,29 @@ Create a directory and `package.json` under `apps/*` or `packages/*`, use
 `workspace:*` for internal dependencies, and run `bun install`. Extend the root
 `tsconfig.json` for TypeScript configuration. Define `build` or `typecheck` scripts
 in the package to include it in Turbo tasks.
+
+## Commit message options
+
+Angular messages use `<type>(<scope>): <summary>`, followed by a blank line,
+a body, and an optional footer. Standard types are `build`, `ci`, `docs`, `feat`,
+`fix`, `perf`, `refactor`, and `test`. Scope is optional. Use an imperative,
+lowercase summary without a final period. Except for `docs`, the body must explain
+the motivation and impact in at least 20 characters. Footers can contain
+`BREAKING CHANGE:` with migration instructions, `DEPRECATED:` with alternatives,
+and issue references such as `Fixes #123`.
+
+Both Portal pages provide type suggestions, a custom type input, scope, and a
+multiline footer before generation. Blank fields retain automatic behavior.
+Custom types extend the Angular standard. The agent is instructed to preserve
+supplied footer text, including its language.
+
+```bash
+bun apps/cli/src/index.ts --type feat --scope core --footer 'Fixes #123'
+bun apps/cli/src/index.ts --type release --scope cli
+```
+
+Types allow up to 24 lowercase letters, digits, or hyphens, starting with a letter.
+Scopes allow up to 40 letters, digits, spaces, `.`, `_`, `/`, or `-`, starting
+with a letter or digit. Footers allow up to 4,000 characters. Surrounding whitespace
+is trimmed. The API accepts these fields as an optional `options` object alongside
+`diff`, and returns HTTP 400 for invalid options.

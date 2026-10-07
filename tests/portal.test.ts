@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { parseDiff } from "../apps/portal/src/lib/diff";
+import { MAX_DIFF_BYTES, parseDiff } from "../apps/portal/src/lib/diff";
 
 const diff = `diff --git a/example.ts b/example.ts
 index 123..456 100644
@@ -80,6 +80,8 @@ describe("commit message API validation", () => {
       "{",
       JSON.stringify({ diff: "hello" }),
       JSON.stringify({ diff: 42 }),
+      JSON.stringify({ diff, options: { type: "feat\nfix" } }),
+      JSON.stringify({ diff, options: { footer: 42 } }),
     ]) {
       const response = await POST(
         new Request("http://localhost/api/commit-message", {
@@ -97,7 +99,7 @@ describe("commit message API validation", () => {
     const response = await POST(
       new Request("http://localhost/api/commit-message", {
         method: "POST",
-        body: "x".repeat(602_000),
+        body: "x".repeat(MAX_DIFF_BYTES * 6 + 32_769),
       }),
     );
     expect(response.status).toBe(413);

@@ -1,5 +1,16 @@
 // English source messages are the lookup keys; keep original user content untranslated.
 export const zh: Record<string, string> = {
+  "Commit options": "提交选项",
+  Type: "类型",
+  Scope: "影响范围",
+  Footer: "页脚",
+  "Auto or custom type": "自动选择或输入自定义类型",
+  "Auto (e.g. core, router)": "自动判断（例如 core、router）",
+  "Leave fields blank for automatic generation. Custom types extend the Angular standard. Footer text is preserved.":
+    "留空时自动生成。自定义类型是对 Angular 标准的扩展；页脚保留原文。",
+  "Invalid commit options. Check type, scope, and footer.":
+    "提交选项无效，请检查类型、范围和页脚。",
+
   "Enter a valid public GitHub PR URL, such as https://github.com/owner/repo/pull/123.":
     "请输入有效的公开 GitHub PR 链接，例如 https://github.com/owner/repo/pull/123。",
   "GitHub returned an empty response. Please try again later.":
