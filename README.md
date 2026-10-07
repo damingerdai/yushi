@@ -92,7 +92,14 @@ When starting Portal directly, export the key or configure `apps/portal/.env.loc
 The `/pull-request` page accepts public GitHub pull request URLs, including links
 to the Files changed and Commits tabs. Load a PR to preview its title, status, and
 diff, then generate a commit message using the same core agent. The upload page
-and PR page share the diff viewer and generation UI.
+and PR page share the diff viewer and generation UI. Both routes live under the
+`(workspace)` route group, whose layout keeps the workspace shell and commit
+preferences mounted during navigation. Switching sources resets the source-specific
+diff and result and cancels pending requests; type, scope, and footer are retained.
+Each page composes its own import component, diff preview, and commit message panel.
+A page-scoped session provider owns requests and results; the layout owns shared
+commit preferences and the header/navigation/footer.
+The public URLs remain `/` and `/pull-request`.
 
 PR metadata and public visibility are fetched anonymously through the
 [GitHub REST API](https://docs.github.com/en/rest/pulls/pulls#get-a-pull-request).
