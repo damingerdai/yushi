@@ -13,6 +13,7 @@
   "dependencies": {
     "@upstash/ratelimit": "^2.2.0",
     "@upstash/redis": "^1.39.0",
+    "@vercel/speed-insights": "^2.0.0",
     "@yushi/core": "workspace:*",
     "@yushi/github": "workspace:*",
     "@yushi/ui": "workspace:*",

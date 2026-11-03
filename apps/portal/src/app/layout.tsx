@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import type { ReactNode } from "react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { LocaleProvider } from "@/components/locale-provider";
 import { LOCALE_COOKIE, normalizeLocale, translate } from "@/lib/i18n";
 import "./globals.css";
@@ -26,6 +27,7 @@ export default async function RootLayout({
     <html lang={locale} className="h-full antialiased">
       <body className="min-h-full font-sans">
         <LocaleProvider initialLocale={locale}>{children}</LocaleProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
