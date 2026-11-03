@@ -1,3 +1,4 @@
+import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import type { ReactNode } from "react";
@@ -25,7 +26,22 @@ export default async function RootLayout({
   return (
     <html lang={locale} className="h-full antialiased">
       <body className="min-h-full font-sans">
-        <LocaleProvider initialLocale={locale}>{children}</LocaleProvider>
+        <ClerkProvider
+          appearance={{
+            variables: {
+              colorPrimary: "oklch(0.205 0 0)",
+              colorPrimaryForeground: "oklch(0.985 0 0)",
+              colorForeground: "oklch(0.145 0 0)",
+              colorMutedForeground: "oklch(0.556 0 0)",
+              colorBackground: "oklch(1 0 0)",
+              colorInput: "oklch(1 0 0)",
+              colorInputForeground: "oklch(0.145 0 0)",
+              borderRadius: "0.625rem",
+            },
+          }}
+        >
+          <LocaleProvider initialLocale={locale}>{children}</LocaleProvider>
+        </ClerkProvider>
       </body>
     </html>
   );

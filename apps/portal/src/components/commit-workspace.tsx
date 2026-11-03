@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
 import type { ReactNode } from "react";
+import { AuthButtons } from "@/components/auth-buttons";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { useLocale } from "@/components/locale-provider";
 import { CommitPreferencesProvider } from "./commit-preferences";
@@ -46,6 +47,8 @@ export default function CommitWorkspace({ children }: { children: ReactNode }) {
             Diff → Commit
           </Badge>
           <LanguageSwitcher />
+          <span aria-hidden="true" className="h-5 w-px bg-border" />
+          <AuthButtons />
         </div>
       </header>
       <nav aria-label={t("Change source")} className="mt-6 flex gap-2 text-sm">

@@ -120,6 +120,8 @@ export const zh: Record<string, string> = {
     "AI 生成失败，请稍后重试或检查服务端模型配置。",
   incomplete: "不完整",
   Language: "语言",
+  "Sign in": "登录",
+  "Sign up": "注册",
   "Yushi home": "Yushi 首页",
   "GitHub Pull Request": "GitHub 拉取请求",
   "AI commit message": "AI 提交说明",
